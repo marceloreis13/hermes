@@ -6,9 +6,9 @@
 //  Copyright © 2022 test. All rights reserved.
 //
 
-import SwiftUI
-import Combine
 import Apollo
+import Combine
+import SwiftUI
 
 class RepositoryViewModel: ObservableObject {
     @Published public var repositories: [RepositoryDetails] = []
@@ -22,19 +22,19 @@ class RepositoryViewModel: ObservableObject {
     init(client: GraphQLClient = ApolloClient.shared) {
         self.client = client
     }
-    
+
     public func getRepositories(phrase: String) {
         guard hasNextPage else { return }
-        
+
         let filter = SearchRepositoriesQuery.Filter.after(cursor, limit: pageLimit)
         client.searchRepositories(mentioning: phrase, filter: filter) { [weak self] response in
             guard let self = self else { return }
-            
+
             switch response {
             case let .failure(error):
                 self.isRequestFailed = true
                 print(error)
-                
+
             case let .success(results):
                 self.repositories.append(contentsOf: results.repos)
                 let pageInfo = results.pageInfo
@@ -44,7 +44,5 @@ class RepositoryViewModel: ObservableObject {
                 self.hasNextPage = pageInfo.hasNextPage
             }
         }
-        
     }
 }
-
