@@ -13,16 +13,14 @@ struct RepositoryView: View {
 
     var body: some View {
         NavigationView {
-            GeometryReader { geometry in
-                ZStack {
-                    List {
-                        Repositories(repos: repositoryViewModel.repositories, geometry: geometry)
+            ZStack {
+                List {
+                    Repositories(repos: repositoryViewModel.repositories)
 
-                        LoaderView(isFailed: repositoryViewModel.isRequestFailed,
-                                   hasNextPage: repositoryViewModel.hasNextPage)
-                            .onAppear(perform: fetchData)
-                            .onTapGesture(perform: onTapLoadView)
-                    }
+                    LoaderView(state: repositoryViewModel.state)
+                        .onAppear(perform: fetchData)
+                        .onTapGesture(perform: fetchData)
+                        .opacity(repositoryViewModel.state.shouldShowMessage ? 1 : 0)
                 }
             }
             .navigationTitle("GitHub Repositories")
@@ -34,42 +32,30 @@ struct RepositoryView: View {
     private func fetchData() {
         repositoryViewModel.getRepositories(phrase: "graphql")
     }
-
-    private func onTapLoadView() {
-        if repositoryViewModel.isRequestFailed {
-            repositoryViewModel.isRequestFailed = false
-            fetchData()
-        }
-    }
 }
 
 // MARK: - Subviews
 
 struct Repositories: View {
     let repos: [RepositoryDetails]
-    let geometry: GeometryProxy
 
     var body: some View {
         ForEach(repos.indices, id: \.self) { idx in
-            RepositoryRow(repository: repos[idx], geometry: geometry)
+            RepositoryRow(repository: repos[idx])
         }
     }
 }
 
 struct RepositoryRow: View {
     let repository: RepositoryDetails
-    let geometry: GeometryProxy
 
     var body: some View {
-        HStack(alignment: .center) {
+        HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading) {
                 ImageView(withURL: repository.owner.avatarUrl)
-                Spacer()
             }
-            .padding(.leading, 20.0)
-            .padding(.trailing, 8.0)
 
-            VStack(alignment: .leading, spacing: 10.0) {
+            VStack(alignment: .leading, spacing: 16.0) {
                 VStack(alignment: .leading, spacing: 8.0) {
                     Text(repository.name)
                         .foregroundColor(.black)
@@ -79,35 +65,28 @@ struct RepositoryRow: View {
                         .foregroundColor(.black)
                         .italic()
                 }
-                .padding(.trailing, 60)
 
                 HStack {
                     Image(systemName: "star.fill")
-                        .foregroundColor(.black)
+                        .foregroundColor(.yellow)
 
                     Text("\(repository.stargazers.totalCount)")
                         .foregroundColor(.black)
                 }
-
-                Spacer()
             }
         }
-        .padding(.top, 16.0)
-        .frame(width: geometry.size.width - 16.0, height: 100.0, alignment: .leading)
-        .padding(.leading, 10.0)
+        .padding(10.0)
+        .frame(height: 100.0, alignment: .leading)
     }
 }
 
 struct LoaderView: View {
-    let isFailed: Bool
-    let hasNextPage: Bool
+    let state: RepoState
 
     var body: some View {
-        if hasNextPage {
-            Text(isFailed ? "Failed. Tap to retry." : "Loading..")
-                .foregroundColor(isFailed ? .red : .green)
-                .padding()
-        }
+        Text(state.message)
+            .foregroundColor(state.color)
+            .padding()
     }
 }
 
@@ -121,7 +100,7 @@ struct ImageView: View {
     var body: some View {
         if let url = URL(string: url) {
             AsyncImage(url: url,
-                       placeholder: { Text("Loading ...") },
+                       placeholder: { Text("...") },
                        image: { Image(uiImage: $0).resizable() })
                 .frame(width: 50, height: 50)
                 .clipShape(Circle())

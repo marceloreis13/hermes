@@ -15,8 +15,9 @@
 In this challenge I used SwiftUI since I'm currently working 100% on my projects, so naturally would be more comfortable with that. Regarding libs, I believe wasn't necessary to import/use any, as all elements, services and extensions were simple and fast to implement, otherwise I would import without a doubt.
 
 ### How many time 
-I spend a little over `4 hours` since I wasted some time trying to understand how the GitHub api worked (seems this challenge are using a new version and I was not able to find enough information on google), so unfortunately I was not able to finish the challenge as I wished.
+I spent a little over `4 hours` to complete all mandatory requirements, and less than `1 hour` to finish all that was delivered (including the tests).
 
 ### Evidences
-![Simulator Screen Shot - iPhone 13 mini - 2022-04-29 at 20 35 42](https://user-images.githubusercontent.com/3719474/166080874-f2e301f8-b00b-42eb-b74f-42964271fe2b.png)
-
+| Normal Case   |      Stressed Case |  Error Case
+|:----------:|:-------------:|:-------------:|
+| ![Simulator Screen Shot - iPhone 13 mini - 2022-04-30 at 08 48 18](https://user-images.githubusercontent.com/3719474/166104237-eb922077-90e5-4391-9b1f-a9b6421f54bb.png) | ![Simulator Screen Shot - iPhone 13 mini - 2022-04-30 at 08 52 35](https://user-images.githubusercontent.com/3719474/166104469-d7b7d232-b06e-41c4-8c7c-de45ec58b7de.png) | ![Simulator Screen Shot - iPhone 13 mini - 2022-04-30 at 09 01 40](https://user-images.githubusercontent.com/3719474/166104678-9e34c1d7-9d7b-487f-9c77-0b2e63cd83ee.png) |
